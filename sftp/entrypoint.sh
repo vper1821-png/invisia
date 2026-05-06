@@ -1,19 +1,30 @@
 #!/bin/bash
 set -e
 
-echo "SFTP shared hosting"
+echo "SFTP with Kubernetes Secret users"
+
+USERS_FILE="/users.conf"
 
 addgroup -S web || true
 
-for u in kp dev admin; do
-  adduser -D -h /var/www/html -u $(shuf -i 1001-2000 -n 1) $u
+if [ ! -f "$USERS_FILE" ]; then
+  echo "ERROR: users.conf not found"
+  exit 1
+fi
 
-  # passwords consistentes (NO del Deployment)
-  echo "$u:Password$u" | chpasswd
+while IFS=: read -r user uid pass; do
+  echo "Creating user $user ($uid)"
 
-  addgroup $u web || true
-done
+  # crear usuario sin home físico (usa PVC directo)
+  adduser -D -h /var/www/html -u "$uid" "$user"
 
+  echo "$user:$pass" | chpasswd
+
+  addgroup "$user" web || true
+
+done < "$USERS_FILE"
+
+# permisos compartidos del sitio
 chown -R root:web /var/www/html
 chmod -R 2775 /var/www/html
 
