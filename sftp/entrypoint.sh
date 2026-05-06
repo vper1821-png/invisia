@@ -31,8 +31,8 @@ while IFS=: read -r user uid pass; do
 done < "$USERS_FILE"
 
 # 🔥 PERMISOS COMPARTIDOS CON WEB
-chown -R root:www-data /data || true
-chmod -R 775 /data || true
+chown -R root:www-data /var/www/html || true
+chmod -R 775 /var/www/html || true
 
 /usr/sbin/sshd -D -e
 
