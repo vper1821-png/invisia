@@ -30,9 +30,16 @@ while IFS=: read -r user uid pass; do
 
 done < "$USERS_FILE"
 
-# permisos compartidos
-chown -R root:www-data /var/www/html || true
-chmod -R 775 /var/www/html || true
+# grupo compartido
+addgroup -S www || true
+
+for u in kp dev admin; do
+  addgroup $u www || true
+done
+
+# permisos consistentes SIN romper ownership de usuarios
+chown -R root:www /var/www/html
+chmod -R 2775 /var/www/html
 
 /usr/sbin/sshd -D -e
 
