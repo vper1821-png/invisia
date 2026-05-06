@@ -1,13 +1,20 @@
 FROM alpine:3.20
 
-RUN apk add --no-cache openssh
+RUN apk add --no-cache openssh bash shadow
 
-RUN adduser -D -u 1001 kp && echo "kp:PasswordSeguro123!" | chpasswd
+# crear usuario fijo
+RUN adduser -D -u 1001 kp
 
-RUN mkdir -p /home/kp/upload && chown -R kp:kp /home/kp
+# preparar directorio
+RUN mkdir -p /home/kp/upload && \
+    chown -R kp:kp /home/kp
 
+# ssh config básico
 RUN ssh-keygen -A
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 22
 
-CMD ["/usr/sbin/sshd","-D","-e"]
+ENTRYPOINT ["/entrypoint.sh"]
