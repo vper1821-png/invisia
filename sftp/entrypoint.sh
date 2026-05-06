@@ -3,7 +3,6 @@ set -e
 
 echo "Iniciando SFTP multiusuario..."
 
-# cargar usuarios desde archivo o fallback
 USERS_FILE="/users.conf"
 
 if [ -f "$USERS_FILE" ]; then
@@ -20,21 +19,21 @@ fi
 while IFS=: read -r user uid pass; do
   echo "Creando usuario $user ($uid)"
 
-  adduser -D -u $uid $user
+  # 🔥 HOME REAL EN PVC
+  adduser -D -h /var/www/html/$user -u $uid $user
+
   echo "$user:$pass" | chpasswd
 
-  # 🔥 CLAVE: todos trabajan en /data (NO /home)
   mkdir -p /var/www/html/$user
   chown -R $user:$user /var/www/html/$user
   chmod 775 /var/www/html/$user
 
 done < "$USERS_FILE"
 
-# 🔥 PERMISOS COMPARTIDOS CON WEB
+# permisos compartidos
 chown -R root:www-data /var/www/html || true
 chmod -R 775 /var/www/html || true
 
 /usr/sbin/sshd -D -e
-
 
 
