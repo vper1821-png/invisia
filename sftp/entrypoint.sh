@@ -24,9 +24,9 @@ while IFS=: read -r user uid pass; do
   echo "$user:$pass" | chpasswd
 
   # 🔥 CLAVE: todos trabajan en /data (NO /home)
-  mkdir -p /data/$user
-  chown -R $user:$user /data/$user
-  chmod 775 /data/$user
+  mkdir -p /var/www/html/$user
+  chown -R $user:$user /var/www/html/$user
+  chmod 775 /var/www/html/$user
 
 done < "$USERS_FILE"
 
@@ -35,3 +35,6 @@ chown -R root:www-data /data || true
 chmod -R 775 /data || true
 
 /usr/sbin/sshd -D -e
+
+
+
