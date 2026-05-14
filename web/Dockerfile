@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
         mysqli \
         mbstring \
         ftp \
+        imap \
     && a2enmod rewrite headers
 
 
