@@ -18,10 +18,6 @@ RUN apt-get update && apt-get install -y \
         imap \
     && a2enmod rewrite headers
 
-
-
-
-
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 RUN chown -R www-data:www-data /var/www/html
 
