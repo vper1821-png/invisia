@@ -15,12 +15,10 @@ RUN apt-get update && apt-get install -y \
         ftp \
     && a2enmod rewrite headers
 
-# Crear grupo web con GID 33
-RUN addgroup --gid 33 web && usermod -aG web www-data
+
+
+
 
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 RUN chown -R www-data:www-data /var/www/html
-
-EXPOSE 80
-
 
