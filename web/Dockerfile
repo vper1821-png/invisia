@@ -17,7 +17,12 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt-get update && apt-get install -y whois
 
-
+# Descargar PHPMailer directamente (sin Composer)
+RUN cd /tmp && \
+    curl -L https://github.com/PHPMailer/PHPMailer/archive/refs/tags/v6.9.1.tar.gz | tar xz && \
+    mkdir -p /var/www/html/vendor/phpmailer/phpmailer && \
+    cp -r PHPMailer-6.9.1/src/* /var/www/html/vendor/phpmailer/phpmailer/ && \
+    rm -rf PHPMailer-6.9.1
 
 
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
