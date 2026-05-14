@@ -7,6 +7,9 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libcurl4-openssl-dev \
+    libc-client-dev \
+    libkrb5-dev \
+    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install \
         pdo_mysql \
         mysqli \
@@ -14,6 +17,7 @@ RUN apt-get update && apt-get install -y \
         ftp \
         imap \
     && a2enmod rewrite headers
+
 
 
 
