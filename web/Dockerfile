@@ -4,18 +4,15 @@ FROM php:8.2-apache
 
 
 RUN apt-get update && apt-get install -y \
-    libcurl4-openssl-dev \
+    libonig-dev \
     libxml2-dev \
+    libcurl4-openssl-dev \
     && docker-php-ext-install \
         pdo_mysql \
         mysqli \
-        ftp \
-        curl \
-        dom \
-        simplexml \
         mbstring \
+        ftp \
     && a2enmod rewrite headers
-
 
 
 
