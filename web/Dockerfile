@@ -17,15 +17,14 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt-get update && apt-get install -y whois
 
-# Descargar PHPMailer
-RUN cd /tmp && \
-    curl -L https://github.com/PHPMailer/PHPMailer/archive/refs/tags/v6.9.1.tar.gz | tar xz && \
-    mkdir -p /var/www/html/vendor/phpmailer/phpmailer && \
-    cp -r PHPMailer-6.9.1/src/* /var/www/html/vendor/phpmailer/phpmailer/ && \
-    rm -rf PHPMailer-6.9.1
+# Instalar Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Crear autoload simple
-RUN echo '<?php spl_autoload_register(function($class) { $prefix = "PHPMailer\\PHPMailer\\"; $base_dir = __DIR__ . "/vendor/phpmailer/phpmailer/"; $len = strlen($prefix); if (strncmp($prefix, $class, $len) !== 0) return; $relative_class = substr($class, $len); $file = $base_dir . str_replace("\\", "/", $relative_class) . ".php"; if (file_exists($file)) require $file; }); ?>' > /var/www/html/vendor/autoload.php
+# Establecer directorio de trabajo
+WORKDIR /var/www/html
+
+# Instalar PHPMailer con Composer
+RUN composer require phpmailer/phpmailer
 
 
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
