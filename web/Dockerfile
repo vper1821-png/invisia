@@ -23,8 +23,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Establecer directorio de trabajo
 WORKDIR /var/www/html
 
-# Instalar PHPMailer con Composer
-RUN composer require phpmailer/phpmailer
+# Inicializar proyecto Composer e instalar PHPMailer
+RUN composer init --no-interaction --require="php >=8.2" && \
+    composer require phpmailer/phpmailer
 
 
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
