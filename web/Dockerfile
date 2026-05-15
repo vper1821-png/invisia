@@ -1,11 +1,14 @@
 FROM php:8.2-apache-bullseye
 
+# Instalar extensiones y herramientas necesarias (incluye git y unzip para Composer)
 RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libcurl4-openssl-dev \
     libc-client-dev \
     libkrb5-dev \
+    unzip \
+    git \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-install \
         imap \
@@ -20,12 +23,16 @@ RUN apt-get update && apt-get install -y whois
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Establecer directorio de trabajo
 WORKDIR /var/www/html
 
-# Inicializar proyecto Composer e instalar PHPMailer
-RUN composer init --no-interaction --require="php >=8.2" && \
-    composer require phpmailer/phpmailer
+# Crear composer.json con la dependencia PHPMailer
+RUN echo '{"require":{"phpmailer/phpmailer":"^6.9"}}' > composer.json
+
+# Instalar dependencias (generará vendor/autoload.php)
+RUN composer install --no-interaction --no-progress --no-dev
+
+# Limpiar caché de Composer para reducir tamaño
+RUN composer clear-cache
 
 
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
