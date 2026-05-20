@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libc-client-dev \
     libkrb5-dev \
+    libssh2-1-dev \
     unzip \
     git \
     && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
@@ -16,6 +17,8 @@ RUN apt-get update && apt-get install -y \
         mysqli \
         mbstring \
         ftp \
+    && pecl install ssh2 \
+    && docker-php-ext-enable ssh2 \    
     && a2enmod rewrite headers
 
 RUN apt-get update && apt-get install -y whois
