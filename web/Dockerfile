@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
     && pecl install ssh2 \
     && docker-php-ext-enable ssh2 \    
     && a2enmod rewrite headers
+RUN apt-get update && apt-get install -y sshpass
 
 RUN apt-get update && apt-get install -y whois
 
