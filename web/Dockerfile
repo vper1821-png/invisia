@@ -42,3 +42,8 @@ RUN composer clear-cache
 RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 RUN chown -R www-data:www-data /var/www/html
 
+# Crear directorio para logs del SIEM y asignar permisos
+RUN mkdir -p /var/www/html/modulos/siem/logs && \
+    chown -R www-data:www-data /var/www/html/modulos/siem/logs && \
+    chmod 755 /var/www/html/modulos/siem/logs
+
